@@ -1,0 +1,12 @@
+{
+   "name": "HideMessageShortcuts",
+   "version": "1.0.0",
+   "description": "Hide the unnecessary shortcut icons from messages.",
+   "authors": [
+      {
+         "name": "SerStars",
+         "id": "861631850681729045"
+      }
+   ],
+   "color": "#000001"
+}
