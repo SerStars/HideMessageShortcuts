@@ -1,5 +1,5 @@
 # HideMessageShortcuts
-Hide the unnecessary icons from the chat bar
+Hide the unnecessary shortcut icons from messages
 
 [Install Plugin][pluginlink]
 
