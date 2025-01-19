@@ -4,11 +4,6 @@ import { React } from 'enmity/metro/common';
 import { getByProps } from 'enmity/metro';
 import { get } from "enmity/api/settings";
 
-const canForward = getByProps("canShowForwardShortcut");
-const canReply = getByProps("canShowReplyShortcut");
-const canReact = getByProps("canShowReactionShortcut");
-const canThread = getByProps("canShowThreadShortcut");
-
 import manifest, { name as plugin_name } from '../manifest.json'
 import Settings from "./components/Settings"
 const Patcher = create('HideMessageShortcuts');
@@ -17,29 +12,19 @@ const HideMessageShortcuts: Plugin = {
    ...manifest,
 
    onStart() {
-      if (get(plugin_name, "hideForward", true)) {
-         if (canForward && typeof canForward.canShowForwardShortcut === 'function') {
-            Patcher.instead(canForward, 'canShowForwardShortcut', () => false);
-         }
-      }
+      const shortcuts = getByProps('isInMessageShortcutsExperiment');
+      const shortcutsToPatch = {
+         canShowForwardShortcut: get(plugin_name, "hideForward", true),
+         canShowReplyShortcut: get(plugin_name, "hideReply", true),
+         canShowReactionShortcut: get(plugin_name, "hideReaction", true),
+         canShowThreadShortcut: get(plugin_name, "hideThread", true)
+      };
 
-      if (get(plugin_name, "hideReply", true)) {
-         if (canReply && typeof canReply.canShowReplyShortcut === 'function') {
-            Patcher.instead(canReply, 'canShowReplyShortcut', () => false);
+      Object.entries(shortcutsToPatch).forEach(([property, shouldHide]) => {
+         if (shouldHide && typeof shortcuts[property] === 'function') {
+            Patcher.instead(shortcuts, property, () => false);
          }
-      }
-
-      if (get(plugin_name, "hideReaction", true)) {
-         if (canReact && typeof canReact.canShowReactionShortcut === 'function') {
-            Patcher.instead(canReact, 'canShowReactionShortcut', () => false);
-         }
-      }
-
-      if (get(plugin_name, "hideThread", true)) {
-         if (canThread && typeof canThread.canShowThreadShortcut === 'function') {
-            Patcher.instead(canThread, 'canShowThreadShortcut', () => false);
-         }
-      }
+      });
    },
 
    onStop() {
